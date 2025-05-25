@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 // const server = createServer(app);
 const io = new Server(server);
-
+const PORT = process.env.PORT || 3000
 app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "index.html"));
 });
@@ -33,7 +33,7 @@ socket.on("typing2", ()=>{
 });
 
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
   console.log("server running at http://localhost:3000");
 });
 
