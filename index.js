@@ -19,8 +19,7 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("chat message", (msg) => {
-    // console.log("message: " + msg);
-    // socket.emit("message", msg);
+   
     socket.broadcast.emit('message');
   });
 
@@ -30,7 +29,6 @@ socket.on("typing1", ()=>{
 socket.on("typing2", ()=>{
   socket.broadcast.emit("typing_2")
 })
-socket.on("")
 
 });
 
