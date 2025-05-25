@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Socket.IO chat</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+        color: #fff;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+      #typing {
+        padding: 2rem;
+        background: #bfc9c1;
+      }
+      #form {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        position: fixed;
+        bottom: 33px;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      }
+      #input {
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
+      }
+      #input:focus {
+        outline: none;
+      }
+      #form > button {
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
+
+      #messages {
+        list-style-type: none;
+        
+        margin: 0;
+        padding: 0;
+        color: #fff;
+      }
+      #messages > li {
+        padding: 0.5rem 1rem;
+        border: 1px solid #6e6c6c;
+        margin-top: 3px;
+      }
+      #messages > li:nth-child(odd) {
+        background: #2a1741;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="typing"></div>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      const form = document.getElementById("form");
+      const div_typing = document.getElementById("typing");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("chat message", input.value);
+          input.value = "";
+        }
+      });
+
+      input.addEventListener("keydown", () => {
+        socket.emit("typing1");
+      });
+
+      input.addEventListener("keyup", () => {
+        setTimeout(() => {
+          socket.emit("typing2");
+        }, 4000);
+      });
+
+      // socket.on('chat message', (msg) => {
+      socket.on("message", (msg) => {
+        const item = document.createElement("li");
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on("typing_1", () => {
+        div_typing.innerHTML = "typing .....";
+      });
+      socket.on("typing_2", () => {
+        div_typing.innerHTML = "";
+      });
+    </script>
+  </body>
+</html>
